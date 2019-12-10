@@ -303,10 +303,7 @@ export function loadKMZ(file: File, layersManager: LayersManager): Promise<React
             type: 'OVERLAY'
           };
           const localVectorSource = layersManager.createAndAddLayerFromSource(
-            'LocalVector',
-            {},
-            layerProps
-          ) as LocalVector;
+            'LocalVector', {}, layerProps ) as LocalVector;
           localVectorSource.addFeatures(features);
           resolve(layerProps.uid);
         },
@@ -379,10 +376,7 @@ export function loadZippedShapefile(file: File, layersManager: LayersManager): P
             type: 'OVERLAY'
           };
           const localVectorSource = layersManager.createAndAddLayerFromSource(
-            'LocalVector',
-            {},
-            layerProps
-          ) as LocalVector;
+            'LocalVector', {}, layerProps          ) as LocalVector;
           localVectorSource.addFeatures(features);
           resolve(null);
         });

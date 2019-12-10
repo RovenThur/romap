@@ -7,7 +7,7 @@ import { CounterWindow } from './CounterWindow';
 import { QueryWindow } from './QueryWindow';
 import { HideToolsButton } from './HideToolsButton';
 import { TileArcGISRest, ImageStatic, TileWms, Xyz } from '../source';
-import { Toc, ScaleLine, PanZoom, LayerLoader } from '../tool';
+import { Toc, ScaleLine, PanZoom, LayerLoader, Identify } from '../tool';
 import { Image, Tile } from '../layer';
 import { Projection } from '../Projection';
 import { Control, Zone } from '../container';
@@ -94,6 +94,7 @@ export class SampleApp extends React.Component<{}, { hideTools: boolean }> {
               <LayerLoader uid="LayerLoader" gisProxyUrl="http://localhost:8181" />
               <ShowSnapshot uid="ShowSnapshot" />
               <DrawLine uid="DrawLine" />
+              <Identify uid="Identify" defaultActivated={true} activated={true} />
             </Zone>
           </Zone>
         )}

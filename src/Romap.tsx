@@ -202,7 +202,7 @@ export class Romap extends React.Component<IRomapProps, IRomapState> {
     // Tools
     React.Children.map(this.props.children, (child: React.ReactElement<any>) => {
       if (child != null && BaseTool.isPrototypeOf(child.type)) {
-        const toolElement = this.toolsManager.getToolElements(toolElement => toolElement.uid == child.props.uid).pop();
+        const toolElement = this.toolsManager.getToolElements(toolelement => toolelement.uid === child.props.uid).pop();
         if (toolElement != null) {
           elems.push(toolElement.reactElement);
         }
