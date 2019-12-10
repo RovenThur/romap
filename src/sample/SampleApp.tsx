@@ -58,7 +58,7 @@ export class SampleApp extends React.Component<{}, { hideTools: boolean }> {
         uid="map"
         keyboardEventTarget={document}
         olMapStyle={{ position: 'absolute', width: 'calc(100% - 15px)', height: 'calc(100% - 15px)' }}
-        afterMount={(olMap: OlMap) => {
+        afterMount={({ olMap }) => {
           olMap.setView(
             new OlView({
               center: [490000, 6800000],
