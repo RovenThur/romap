@@ -22,7 +22,6 @@ export class Identify extends BaseTool<IBaseToolProps, IIdentifyState> {
     }
 
     public toolDidConstruct() {
-        console.log("Did Construct")
         const { olMap } = this.context;
         if (overlay === null) {
             this.buildclickInteractionAndLayer();
@@ -31,7 +30,6 @@ export class Identify extends BaseTool<IBaseToolProps, IIdentifyState> {
     }
 
     public toolDidDestroy() {
-        console.log("destroy")
         const { olMap } = this.context;
         olMap.un('click', this.handleClick);
         this.context.olMap.removeOverlay(overlay);
@@ -52,6 +50,7 @@ export class Identify extends BaseTool<IBaseToolProps, IIdentifyState> {
 
         const promises: Array<Promise<IQueryResponse>> = [];
         const queryRequest = constructQueryRequestFromPixel(clickEvent.pixel, 2, olMap);
+        queryRequest.limit = 10;
         olMap.forEachLayerAtPixel(clickEvent.pixel, (layer: OlBaseLayer) => {
             if (layer.getVisible() && 'getSource' in layer) {
                 const source = (layer as any).getSource();
@@ -74,7 +73,6 @@ export class Identify extends BaseTool<IBaseToolProps, IIdentifyState> {
             });
             this.setState({ features });
             overlay.setPosition(clickEvent.coordinate);
-
         });
     }
 
@@ -85,22 +83,31 @@ export class Identify extends BaseTool<IBaseToolProps, IIdentifyState> {
             const htmlItemProps = Object.keys(itemprops)
                 .filter((prop) => typeof itemprops[prop] !== 'object')
                 .map((prop: any, propIndex) => {
-                    return (
-                        <div key={`${prop}-${propIndex}-${index}`}>
-                            {prop}: {itemprops[prop]}
-                        </div>
-                    );
+                    return (<tr className="popup-table-row" key={`${prop}-${propIndex}-${index}`}>
+                            <td className="popup-label-cell">{prop}:</td>
+                            <td className="popup-value-cell">{itemprops[prop]}</td>
+                        </tr>);
                 });
-            return (<div className="popup-element" key={`${tabName}-${index}`}>{htmlItemProps}</div>)
+            if (htmlItemProps.length > 0) {
+                htmlItemProps.push(<tr className="popup-table-row" key={`${tabName}-break`}><td className="break">BREAK</td></tr>);
+            }
+            return htmlItemProps;
         });
+        // On suprime le dernier break
+        if (htmlItems.length > 1) {
+            console.log(htmlItems[htmlItems.length - 1].pop());
+        }
 
-        return (<div key={tabName} className="popup-tabHeader">
-            <h1>{tabName}</h1>
-            <div>
+        return (<table key={tabName} className="popup-section">
+            <thead className="popup-tab">
+                <tr><td>{tabName}</td></tr>
+            </thead>
+            <tbody className="popup-tab-content">
                 {htmlItems}
-            </div>
-        </div>)
+            </tbody>
+        </table>);
     }
+
     public renderPopupContent() {
         const { features } = this.state;
         const content = Object.keys(features)
@@ -109,8 +116,10 @@ export class Identify extends BaseTool<IBaseToolProps, IIdentifyState> {
                 return this.renderTab(key, features[key])
             });
         return (
-            <div id="popup-content">
-                {content}
+            <div className="popup-content">
+                <div className="popup-table-wrapper">
+                    {content}
+                </div>
             </div>
         );
     }
@@ -121,7 +130,10 @@ export class Identify extends BaseTool<IBaseToolProps, IIdentifyState> {
         };
         return (
             <div id="popup" className="popup" ref={this.popup}>
-                <a href="#" className="popup-closer" onClick={closeOverlay}>X</a>
+                <div className="popup-header">
+                    <h2>Identify Results</h2>
+                    <a href="#" className="close-popup" onClick={closeOverlay}>X</a>
+                </div>
                 {this.renderPopupContent()}
             </div>
         )
