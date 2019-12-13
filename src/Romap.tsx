@@ -9,6 +9,7 @@ import { LayersManager } from './LayersManager';
 import { ToolsManager } from './ToolsManager';
 import { Projection } from './Projection';
 import { ISnapshotGetter, ISnapshot } from './ISnapshot';
+import { Identify } from './tool';
 
 const GlobalStyle = createGlobalStyle`
 .ol-unsupported {
@@ -182,8 +183,8 @@ export class Romap extends React.Component<IRomapProps, IRomapState> {
     });
   };
 
-  public renderProjections(): React.ReactElement<IBaseToolProps>[] {
-    const elems: React.ReactElement<IBaseToolProps>[] = [];
+  public renderProjections(): Array<React.ReactElement<IBaseToolProps>> {
+    const elems: Array<React.ReactElement<IBaseToolProps>> = [];
     // Projection
     React.Children.map(this.props.children, (child: React.ReactElement<any>) => {
       if (child != null && Projection === child.type) {
@@ -193,23 +194,22 @@ export class Romap extends React.Component<IRomapProps, IRomapState> {
     return elems;
   }
 
-  public renderChildren(): React.ReactElement<any>[] {
-    const elems: React.ReactElement<any>[] = [];
+  public renderChildren(): Array<React.ReactElement<any>> {
+    const elems: Array<React.ReactElement<any>> = [];
     // Layers
     this.layersManager.getLayerElements().forEach(layerElement => {
       elems.push(layerElement.reactElement);
     });
-    // Tools
     React.Children.map(this.props.children, (child: React.ReactElement<any>) => {
-      if (child != null && BaseTool.isPrototypeOf(child.type)) {
-        const toolElement = this.toolsManager.getToolElements(toolElement => toolElement.uid == child.props.uid).pop();
+      // Tools
+      if (child != null && (BaseTool.isPrototypeOf(child.type))) {
+        const toolElement = this.toolsManager.getToolElements(toolelement => toolelement.uid === child.props.uid).pop();
         if (toolElement != null) {
           elems.push(toolElement.reactElement);
         }
       }
-    });
-    // Containers
-    React.Children.map(this.props.children, (child: React.ReactElement<any>) => {
+
+      // Containers
       if (child != null && BaseContainer.isPrototypeOf(child.type)) {
         elems.push(child);
       }

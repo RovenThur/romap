@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Romap } from '../Romap';
+import { Romap, IAfterData } from '../Romap';
 import OlMap from 'ol/Map';
 import OlView from 'ol/View';
 import { CounterButton } from './CounterButton';
@@ -7,12 +7,13 @@ import { CounterWindow } from './CounterWindow';
 import { QueryWindow } from './QueryWindow';
 import { HideToolsButton } from './HideToolsButton';
 import { TileArcGISRest, ImageStatic, TileWms, Xyz } from '../source';
-import { Toc, ScaleLine, PanZoom, LayerLoader } from '../tool';
+import { Toc, ScaleLine, PanZoom, LayerLoader, useIdentify, Identify } from '../tool';
 import { Image, Tile } from '../layer';
 import { Projection } from '../Projection';
 import { Control, Zone } from '../container';
 import { ShowSnapshot } from './ShowSnapshot';
 import { DrawLine } from './DrawLine';
+import { MapBrowserEvent } from 'ol';
 
 const wkt2154 =
   'PROJCS["RGF93 / Lambert-93",GEOGCS["RGF93",DATUM["Reseau_Geodesique_Francais_1993",SPHEROID["GRS 1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6171"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4171"]],UNIT["metre",1,AUTHORITY["EPSG","9001"]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["standard_parallel_1",49],PARAMETER["standard_parallel_2",44],PARAMETER["latitude_of_origin",46.5],PARAMETER["central_meridian",3],PARAMETER["false_easting",700000],PARAMETER["false_northing",6600000],AUTHORITY["EPSG","2154"],AXIS["X",EAST],AXIS["Y",NORTH]]';
@@ -42,31 +43,35 @@ const toppStateSource = new TileWms({
   types: [{ id: 'topp:states' }]
 });
 
-export class SampleApp extends React.Component<{}, { hideTools: boolean }> {
-  constructor(props: {}) {
-    super(props);
-    this.state = { hideTools: false };
+export interface ISampleAppProp { 
+  hideTools: boolean 
+}
+export function SampleApp (props: ISampleAppProp) {
+  // constructor(props: {}) {
+  //   super(props);
+  //   this.state = { hideTools: false };
+  // }
+
+  const [hideTools, setHideTools] = React.useState(false);
+
+  const afterRomapMounted = (afterData: IAfterData) => {
+    const { olMap } = afterData;
+    olMap.setView(
+      new OlView({
+        center: [490000, 6800000],
+        zoom: 5,
+        projection: 'EPSG:2154'
+      })
+    );
   }
 
-  public setHideTools = (hideTools: boolean) => {
-    this.setState({ hideTools });
-  };
-
-  public render(): React.ReactNode {
+  const render = () => {
     return (
       <Romap
         uid="map"
         keyboardEventTarget={document}
         olMapStyle={{ position: 'absolute', width: 'calc(100% - 15px)', height: 'calc(100% - 15px)' }}
-        afterMount={(olMap: OlMap) => {
-          olMap.setView(
-            new OlView({
-              center: [490000, 6800000],
-              zoom: 5,
-              projection: 'EPSG:2154'
-            })
-          );
-        }}
+        afterMount={afterRomapMounted}
       >
         <Projection code="EPSG:2154" name="RGF93 / Lambert-93" wkt={wkt2154} />
         <Projection code="EPSG:27700" name="OSGB 1936 / British National Grid " wkt={wkt27700} />
@@ -74,7 +79,7 @@ export class SampleApp extends React.Component<{}, { hideTools: boolean }> {
         <Tile uid="World 2D" source={world2D} name="World 2D" type="BASE" />
         <Tile uid="Topp States" source={toppStateSource} name="Topp States" />
         <Image uid="British National Grid" source={britishNationalGrid} name="British National Grid" />
-        {this.state.hideTools === false && (
+        {hideTools === false && (
           <Zone>
             <Control>
               <Toc uid="Toc" />
@@ -84,6 +89,9 @@ export class SampleApp extends React.Component<{}, { hideTools: boolean }> {
             </Control>
             <Control>
               <ScaleLine uid="ScaleLine" />
+            </Control>
+            <Control>
+              <Identify uid="IdentifyTool"/>  
             </Control>
             <Zone style={{ position: 'absolute', top: 'calc(100% - 70px)' }}>
               <CounterButton uid="CounterButton1" />
@@ -98,9 +106,11 @@ export class SampleApp extends React.Component<{}, { hideTools: boolean }> {
           </Zone>
         )}
         <Zone style={{ position: 'absolute', top: 'calc(100% - 40px)' }}>
-          <HideToolsButton uid="HideToolsButton" hideTools={this.state.hideTools} setHideTools={this.setHideTools} />
+          <HideToolsButton uid="HideToolsButton" hideTools={hideTools} setHideTools={setHideTools} />
         </Zone>
       </Romap>
     );
   }
+
+  return render();
 }

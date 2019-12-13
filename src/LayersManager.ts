@@ -175,47 +175,6 @@ export class LayersManager {
   }
 
   /**
-   * Set layerElement
-   */
-  private setLayerElement(layerElement: ILayerElement, refreshIfChanging = true) {
-    const layerMap = layerMaps.get(this.uid);
-    if (layerMap == null) {
-      return false;
-    }
-    const found = layerMap.get(layerElement.uid);
-    let changed = false;
-    if (!found) {
-      if (layerElement.status !== 'del') {
-        layerMap.set(layerElement.uid, {
-          ...layerElement
-        });
-        changed = true;
-      }
-    } else {
-      if (layerElement.status === 'del') {
-        if (found.status === 'react') {
-          layerMap.set(layerElement.uid, {
-            ...layerElement,
-            status: 'del'
-          });
-          changed = true;
-        } else if (found.status === 'ext') {
-          layerMap.delete(layerElement.uid);
-          changed = true;
-        }
-      } else {
-        layerMap.set(layerElement.uid, {
-          ...layerElement
-        });
-        changed = !jsonEqual(found.reactElement.props, layerElement.reactElement.props, ['source', 'children']);
-      }
-    }
-    if (refreshIfChanging && changed) {
-      this.refresh();
-    }
-  }
-
-  /**
    * Update layer props
    */
   public updateLayerProps(uid: React.Key, props: any, refreshIfChanging = true) {
@@ -404,4 +363,45 @@ export class LayersManager {
       }
     });
   }
-}
+
+  /**
+   * Set layerElement
+   */
+  private setLayerElement(layerElement: ILayerElement, refreshIfChanging = true) {
+    const layerMap = layerMaps.get(this.uid);
+    if (layerMap == null) {
+      return false;
+    }
+    const found = layerMap.get(layerElement.uid);
+    let changed = false;
+    if (!found) {
+      if (layerElement.status !== 'del') {
+        layerMap.set(layerElement.uid, {
+          ...layerElement
+        });
+        changed = true;
+      }
+    } else {
+      if (layerElement.status === 'del') {
+        if (found.status === 'react') {
+          layerMap.set(layerElement.uid, {
+            ...layerElement,
+            status: 'del'
+          });
+          changed = true;
+        } else if (found.status === 'ext') {
+          layerMap.delete(layerElement.uid);
+          changed = true;
+        }
+      } else {
+        layerMap.set(layerElement.uid, {
+          ...layerElement
+        });
+        changed = !jsonEqual(found.reactElement.props, layerElement.reactElement.props, ['source', 'children']);
+      }
+    }
+    if (refreshIfChanging && changed) {
+      this.refresh();
+    }
+  }
+  }

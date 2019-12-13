@@ -5,6 +5,319 @@
   <title>romap</title>
 </head>
 <body>
+  <style>
+  .popup {
+    border: solid black;
+}
+
+.popup-container {
+    background-color: white;
+    padding: 5px;
+    border: 1px solid;
+}
+
+.popup-header {
+    position: relative;
+    height: 25px;
+    display: -webkit-box;
+    margin-bottom: 5px;
+}
+
+.close-popup {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    margin-bottom: 0;
+    cursor: pointer;
+    transform: translate(0, -50%);
+    font-size: 2em;
+}
+
+.popup-content {
+    z-index: 2;
+    width: 100%;
+}
+
+.popup-table-wrapper {
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.popup-label-cell {
+    word-wrap: break-word;
+    display: inline;
+    left: 0;
+    text-align: left;
+}
+
+.popup-value-cell {
+    word-wrap: break-word;
+    display: inline;
+    right: 0;
+    text-align: right;
+}
+
+.display-name-container {
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+
+}
+.display-name {
+    padding-bottom: 6px;
+}
+
+.popup-attribute-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.even {
+    background: #02d0ee29;
+}
+
+.odd {
+    background: #ffffff29;
+}
+
+.break {
+    background-color: grey;
+}
+
+.popup-table-item-wrapper {
+    border-style: 
+}
+
+.popup-table-row {
+    min-height: 15px;
+}
+
+.layer-name-label-container {
+    height: 40px;
+    width: 100%;
+    border-top: 1px solid black;
+}
+
+.zoom-icon {
+    display: block;
+    margin-left: 3px;
+    margin-right: 3px;
+    width: 20px;
+    height: 20px;
+    pointer-events: all;
+    background-image: url('./../img/icon-zoom.png');
+    background-size: cover;
+    cursor: pointer;
+}
+
+.clipboard-icon {
+    display: block;
+    margin-left: 3px;
+    margin-right: 3px;
+    width: 20px;
+    height: 20px;
+    pointer-events: all;
+    background-image: url('./../img/icon-clipboard.png');
+    background-size: cover;
+    cursor: copy;
+}
+
+.layer-name-label {
+    font-size: 15px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.pagination-label {
+    float: right;
+}
+
+.slick-prev:before,
+.slick-next:before {
+    color: black;
+}
+
+.slider-container {
+    width: 100%;
+}
+
+.image-slider-container {
+    width: 80% !important;
+    /*height: 40px;*/
+    margin: 0 auto;
+}
+
+.image-slider-container .slick-track {
+    width: 100% !important;
+}
+
+.popup-slider-image {
+    width: 100% !important;
+    height: auto !important;
+}
+
+.popup-title {
+    max-width: 300px;
+}
+
+.popup-section {
+    border-spacing: 0;
+}
+
+.ol-popup-pos {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    margin-bottom: 0;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 2em;
+    font-weight: bold;
+    color: black;
+    transform: translate(-50%, -50%);
+}
+
+.ol-popup-pos-img {
+    width: 16px;
+    padding-bottom: 2px;
+    padding-right: 2px;
+}
+
+.popup-top-center,
+.popup-top-left,
+.popup-top-right {
+    margin-top: 11px;
+}
+
+.popup-bottom-center,
+.popup-bottom-left,
+.popup-bottom-right {
+    margin-bottom: 11px;
+}
+
+.popup-top-right,
+.popup-bottom-right {
+    margin-right: -22px;
+}
+
+.popup-top-left,
+.popup-bottom-left {
+    margin-left: -22px;
+}
+
+.popup-center-left {
+    margin-left: 11px;
+}
+
+.popup-center-right {
+    margin-right: 11px;
+}
+
+.popup-top-center:before,
+.popup-top-left:before,
+.popup-top-right:before,
+.popup-bottom-center:before,
+.popup-bottom-left:before,
+.popup-bottom-right:before,
+.popup-center-right:before,
+.popup-center-left:before,
+.popup-center-left:after,
+.popup-center-right:after,
+.popup-top-center:after,
+.popup-top-left:after,
+.popup-top-right:after,
+.popup-bottom-center:after,
+.popup-bottom-left:after,
+.popup-bottom-right:after {
+    border: solid transparent;
+    content: "";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+}
+
+.popup-top-center:after,
+.popup-top-left:after,
+.popup-top-right:after {
+    border-bottom-color: white;
+    border-width: 10px;
+    top: -8px;
+}
+
+.popup-bottom-center:after,
+.popup-bottom-left:after,
+.popup-bottom-right:after {
+    border-top-color: white;
+    border-width: 10px;
+    bottom: -8px;
+}
+
+.popup-top-center:before,
+.popup-top-left:before,
+.popup-top-right:before {
+    border-bottom-color: #cccccc;
+    border-width: 11px;
+    top: -10px;
+}
+
+.popup-bottom-center:before,
+.popup-bottom-left:before,
+.popup-bottom-right:before {
+    border-top-color: #cccccc;
+    border-width: 11px;
+    bottom: -10px;
+}
+
+.popup-center-right:after,
+.popup-center-left:after {
+    border-width: 10px;
+    top: calc(50% - 10px);
+}
+
+.popup-center-right:before,
+.popup-center-left:before {
+    border-width: 10px;
+    top: calc(50% - 10px);
+}
+
+.popup-center-left:after,
+.popup-center-left:before {
+    border-right-color: white;
+    left: -8px;
+}
+
+.popup-center-right:after,
+.popup-center-right:before {
+    border-left-color: white;
+    right: -8px;
+}
+
+.popup-top-center:after,
+.popup-top-center:before,
+.popup-bottom-center:after,
+.popup-bottom-center:before {
+    left: calc(50% - 10px);
+}
+
+.popup-top-left:after,
+.popup-top-left:before,
+.popup-bottom-left:after,
+.popup-bottom-left:before {
+    left: -10px;
+}
+
+.popup-top-right:after,
+.popup-top-right:before,
+.popup-bottom-right:after,
+.popup-bottom-right:before {
+    right: -10px;
+}
+
+.slick-arrow.slick-hidden {
+    display: none;
+}
+  </style>
 <div id="root"></div>
 </body>
 </html>

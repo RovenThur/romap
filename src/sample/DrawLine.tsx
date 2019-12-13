@@ -42,7 +42,7 @@ export class DrawLine extends BaseButtonTool<IBaseButtonToolProps, any> {
       layerStyles: getDefaultLayerStyles()
     };
     const localVectorSource = this.context.layersManager.createAndAddLayerFromSource(
-      'LocalVector',
+      'identifyVector',
       {},
       props
     ) as LocalVector;
